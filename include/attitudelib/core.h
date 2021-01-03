@@ -8,6 +8,8 @@
 #include <iostream>
 #include <Eigen/Dense>
 
+#define EPSILON 0.000001
+
 namespace attitudelib {
 
 //#include "declarations.h"

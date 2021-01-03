@@ -37,7 +37,7 @@ public:
     ~dcm() {}
 
     // checked
-    void set_item(int x, int y, const _scalar value) {
+    void set_item(int x, int y, const _scalar& value) {
         DCM(x - 1, y - 1) = value;
     }
 
@@ -67,7 +67,13 @@ public:
         return result;
     }
 
-    _scalar* get_diff_kin(const _scalar* omega_vec) {
+    // checked
+    void invert_in_place() {
+        (this->DCM).transposeInPlace();
+    }
+
+    // checked
+    void get_diff_kin(_scalar* dcm_dot, const _scalar* omega_vec) {
         Eigen::Matrix<_scalar, 3, 1> omega;
         Eigen::Matrix<_scalar, 3, 3> cross_prod, res;
 
@@ -75,7 +81,9 @@ public:
         cross_prod << utils::get_cross_operator<_scalar>(omega);
 
         res << -(cross_prod * DCM);
-        return res.transpose().data();
+        res.transposeInPlace();
+
+        for (int i = 0; i < 9; i++) dcm_dot[i] = res.data()[i];
     }
 
     // checked
@@ -97,6 +105,18 @@ public:
     void operator=(const dcm& right) {
         this->DCM << right.DCM;
     }
+
+    // checked
+    bool operator==(const dcm& right) {
+        return ((this->DCM - right.DCM).norm() < EPSILON);
+    }
+
+    // checked
+    bool operator!=(const dcm& right) {
+        return !(operator==(right));
+    }
+
+
 
 };
 

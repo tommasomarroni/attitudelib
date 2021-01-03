@@ -8,21 +8,26 @@
 namespace utils {
 
 template<typename T, int N>
-Eigen::Matrix<T, N, 1> arr_to_vec(T* arr) {
-    Eigen::Matrix<T, N, 1> temp(arr);
-    return temp;
+Eigen::Matrix<T, N, 1> arr_to_vec(const T* arr) {
+    return Eigen::Matrix<T, N, 1>(arr);
 }
 
-/*
 template<typename T, int N, int M>
-Eigen::Matrix<T, N, M> arr_to_mat(T* arr) {}
+Eigen::Matrix<T, N, M> arr_to_mat(const T* arr) {
+    return Eigen::Matrix<T, N, M>(arr).transpose();
+}
 
 template<typename T, int N>
-T* vec_to_arr(Eigen::Matrix<T, N, 1>& vec) {}
+void vec_to_arr(T* arr, const Eigen::Matrix<T, N, 1>& vec) {
+    for (int i = 0; i < N; i++) arr[i] = vec(i);
+}
 
 template<typename T, int N, int M>
-T* mat_to_arr(Eigen::Matrix<T, N, M>& mat) {}
-*/
+void mat_to_arr(T* arr, const Eigen::Matrix<T, N, M>& mat) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) arr[i * M + j] = mat(i, j);
+    }
+}
 
 template<typename T>
 Eigen::Matrix<T, 3, 3> get_cross_operator(Eigen::Matrix<T, 3, 1>& vec) {
